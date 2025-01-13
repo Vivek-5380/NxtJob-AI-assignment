@@ -1,26 +1,15 @@
 import { createPool, Pool } from 'mysql2/promise';
 import dotenv from 'dotenv';
 
-// Load environment variables from .env file
+// Load environment variables
 dotenv.config();
 
-// Ensure required environment variables are set
-if (!process.env.DB_HOST || !process.env.DB_USER || !process.env.DB_PASSWORD || !process.env.DB_NAME) {
-    throw new Error('Missing required database environment variables (DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)');
-}
-
-console.log('Connecting to database with the following configuration:');
-console.log(`DB_HOST: ${process.env.DB_HOST}`);
-console.log(`DB_USER: ${process.env.DB_USER}`);
-console.log(`DB_NAME: ${process.env.DB_NAME}`);
-console.log(`DB_PORT: ${process.env.DB_PORT}`);
-
-// Create a MySQL connection pool
+// Create MySQL connection pool
 const pool: Pool = createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'test',
     port: Number(process.env.DB_PORT) || 3306,
     waitForConnections: true,
     connectionLimit: 10,
@@ -43,26 +32,19 @@ async function initializeDatabase(): Promise<void> {
   `;
 
     try {
-        console.log('Attempting to connect to the database...');
         const connection = await pool.getConnection();
-        console.log('Connected to the database. Initializing schema...');
         await connection.query(createJobsTableQuery);
-        console.log('Database initialized: "jobs" table is ready.');
         connection.release();
+        console.log('Database initialized: "jobs" table is ready.');
     } catch (error) {
         console.error('Error initializing database:', error);
         throw new Error('Failed to initialize the database');
     }
 }
 
-// Call the initializeDatabase function
-initializeDatabase()
-    .then(() => {
-        console.log('Database initialization complete.');
-    })
-    .catch((error) => {
-        console.error('Database initialization failed:', error);
-        process.exit(1); // Exit the process if the database initialization fails
-    });
+initializeDatabase().catch((error) => {
+    console.error('Database initialization failed:', error);
+    process.exit(1);
+});
 
 export default pool;
