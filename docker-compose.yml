@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   job-database:
     image: mysql:8
@@ -30,6 +28,7 @@ services:
       - job-database
     networks:
       - job-network
+    command: ["npm", "run", "start:wait"]
 
 volumes:
   db_data:

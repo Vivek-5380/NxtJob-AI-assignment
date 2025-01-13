@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpileOnly src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "start:wait": "wait-on tcp:job-database:3306 && npm start"
   },
   "keywords": [],
   "author": "Vivek",
@@ -14,7 +15,8 @@
   "dependencies": {
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "mysql2": "^3.12.0"
+    "mysql2": "^3.12.0",
+    "wait-on": "^8.0.2"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
