@@ -17,7 +17,7 @@ const pool: Pool = createPool({
 });
 
 // Function to initialize the database schema
-async function initializeDatabase(): Promise<void> {
+export async function initializeDatabase(): Promise<void> {
     const createJobsTableQuery = `
     CREATE TABLE IF NOT EXISTS jobs (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -41,10 +41,5 @@ async function initializeDatabase(): Promise<void> {
         throw new Error('Failed to initialize the database');
     }
 }
-
-initializeDatabase().catch((error) => {
-    console.error('Database initialization failed:', error);
-    process.exit(1);
-});
 
 export default pool;

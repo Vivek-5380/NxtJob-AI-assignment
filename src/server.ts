@@ -2,6 +2,7 @@ import express, { Application } from 'express';
 import dotenv from 'dotenv';
 import jobRoutes from './routes/jobRoutes';
 import { errorHandler } from './middlewares/errorHandler';
+import { initializeDatabase } from './config/db';
 
 dotenv.config();
 
@@ -10,6 +11,7 @@ const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
+
 
 // Root Endpoint
 app.get('/', (req, res) => {
@@ -23,5 +25,10 @@ app.use('/jobs', jobRoutes);
 app.use(errorHandler);
 
 app.listen(port, () => {
+    initializeDatabase().catch((error) => {
+        console.error('Database initialization failed:', error);
+        process.exit(1);
+    });
+
     console.log(`Server is running on port ${port}`);
 });
